@@ -1,0 +1,19 @@
+= Registry Helper
+
+== Install
+This app enbles us to use custom domain names to push and pull container images into an internal container registry. Domains are defined in the config map and set to "dev.local' and "example.com".
+
+. Update etc/hosts in all pods
+.. kubectl apply -n kube-system -f registry-aliases-config.yaml
+.. kubectl apply -n kube-system -f node-etc-hosts-update.yaml
+. Monitor and verify the script execution
+.. watch kubectl get pods -n kube-system
+.. watch minikube ssh -- sudo cat /etc/hosts
+.. kubectl get svc registry -n kube-system
+. Patch the coredns ConfigMap
+.. bash ./patch-coredns.sh
+. Verify the coredns ConfigMap
+.. kubectl get cm -n kube-system coredns -o yaml
+
+== daemonsets
+A DaemonSet ensures that all (or some) Nodes run a copy of a Pod. As nodes are added to the cluster, Pods are added to them. As nodes are removed from the cluster, those Pods are garbage collected. Deleting a DaemonSet will clean up the Pods it created.
