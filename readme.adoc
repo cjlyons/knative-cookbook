@@ -62,7 +62,7 @@
 |container registry on port 32773
 
 |Istio
-|./bin/install-istio.sh
+|1.4.10, installed using ./bin/install-istio.sh
 |ingress gateway (only using the ingress component of Istio at this point)
 
 |Knative
