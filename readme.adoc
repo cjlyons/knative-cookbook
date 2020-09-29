@@ -1,1 +1,112 @@
-Play around with kubernetes. Based on RedHat tutorials
+= Play around with kubernetes
+* Based on RedHat tutorials @ https://redhat-developer-demos.github.io/knative-tutorial
+
+== Development Tools for Windows 10
+|===
+|Tool |Version |Use
+
+|git
+| 2.17.0
+|Source code management
+
+|kubectl
+|1.19.0
+|k8s CLI
+
+|helm
+|3.3.4
+|Help define, install, & upgrade k8s apps
+
+|stern
+|1.11.0
+|tail multiple pods and containers within each pod
+
+|yq
+|2.4.1
+|Command line YAML processor
+
+|httpie
+|2.2.0
+|HTTP command line tool
+
+|hey
+|N/A, build from https://github.com/rakyll/hey
+|load generator
+
+|watch
+|watch from procps-ng 3.3.12
+|execute a program periodically
+
+|kubectx
+|N/A, download bin from https://github.com/thomasliddledba/kubectxwin
+|Switch between k8s clusters and namespaces
+
+|kubens
+|N/A, download bin from https://github.com/thomasliddledba/kubenswin
+|kubectx dependency
+
+|minikube
+|1.13.1
+|one node k8s cluster for local development
+
+|kubernetes
+|1.19.2
+|installed with minikube
+
+|docker
+|19.03.8
+|run containers
+
+|minikube registry
+|minikube -p knativecookbook addons enable registry
+|container registry on port 32773
+
+|Istio
+|1.4.10, installed using ./bin/install-istio.sh
+|ingress gateway (only using the ingress component of Istio at this point)
+
+|Knative
+|Serving:0.12.0 Eventing:0.12.0
+|The "serving" component provides simplified deployment syntax and automated scale up and down (to 0). 
+The "eventing" component connects Knative Serving Services to event streams other than HTTP (e.g. kafka)
+|===
+
+== Knative Installation
+. Verify Istio installation
+.. kubectl api-resources --api-group=networking.istio.io
+.. kubectl api-resources --api-group=config.istio.io
+.. kubectl api-resources --api-group=authentication.istio.io
+.. kubectl api-resources --api-group=rbac.istio.io
+. Install Serving and Eventing CRDs
+.. kubectl apply --selector knative.dev/crd-install=true --filename "https://github.com/knative/serving/releases/download/v0.12.0/serving.yaml"
+.. kubectl apply --selector knative.dev/crd-install=true --filename "https://github.com/knative/eventing/releases/download/v0.12.0/eventing.yaml"
+. Verify Serving and Eventing CRDs
+.. kubectl api-resources --api-group=serving.knative.dev
+.. kubectl api-resources --api-group=messaging.knative.dev
+.. kubectl api-resources --api-group=eventing.knative.dev
+.. kubectl api-resources --api-group=sources.eventing.knative.dev
+.. kubectl api-resources --api-group=sources.knative.dev
+. Install Serving Components
+.. kubectl apply --selector networking.knative.dev/certificate-provider!=cert-manager --filename "https://github.com/knative/serving/releases/download/v0.12.0/serving.yaml"
+.. watch kubectl get pods -n knative-serving
+. Install Eventing Components
+.. kubectl apply --selector networking.knative.dev/certificate-provider!=cert-manager --filename "https://github.com/knative/eventing/releases/download/v0.12.0/eventing.yaml"
+.. watch kubectl get pods -n knative-eventing
+
+== Set up the docker environment to use minikube
+. Configure
+.. UNIX
+... eval $(minikube docker-env)
+.. Windows
+... Run the "minikube docker-env" command
+... Copy the output and run the related "SET" commands to set DOCKER_TLS_VERIFY, DOCKER_HOST, DOCKER_CERT_PATH, & MINIKUBE_ACTIVE_DOCKERD
+. Verify docker configuration
+.. docker images --format {{.Repository}}
+
+== Set up namespaces (switch using "kubens set chapter-2" )
+. kubectl create namespace chapter-2
+. kubectl create namespace chapter-3
+. kubectl create namespace chapter-4
+. kubectl create namespace chapter-5
+. kubectl create namespace chapter-6
+. kubectl create namespace chapter-7

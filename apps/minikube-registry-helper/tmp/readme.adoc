@@ -1,0 +1,1 @@
+temp folder used by the patch-coredns.sh script
