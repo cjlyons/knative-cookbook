@@ -1,0 +1,27 @@
+
+> node@0.0.0 start C:\Users\chris\git\knative-cookbook\apps\greeter\node
+> node ./bin/www
+
+[0mGET / [32m200 [0m12.306 ms - 57[0m
+[0mGET / [32m200 [0m0.690 ms - 57[0m
+[0mGET / [32m200 [0m1.695 ms - 57[0m
+[0mGET / [32m200 [0m0.706 ms - 57[0m
+[0mGET / [32m200 [0m1.161 ms - 57[0m
+[0mGET / [32m200 [0m2.060 ms - 57[0m
+[0mGET / [32m200 [0m0.911 ms - 57[0m
+[0mGET / [32m200 [0m1.873 ms - 57[0m
+[0mGET / [32m200 [0m1.098 ms - 57[0m
+[0mGET / [32m200 [0m0.630 ms - 58[0m
+[0mGET / [32m200 [0m1.457 ms - 58[0m
+[0mGET / [32m200 [0m0.606 ms - 58[0m
+[0mGET / [32m200 [0m0.608 ms - 58[0m
+[0mGET / [32m200 [0m1.559 ms - 58[0m
+[0mGET / [32m200 [0m1.305 ms - 58[0m
+[0mGET / [32m200 [0m1.105 ms - 58[0m
+[0mGET / [32m200 [0m1.244 ms - 58[0m
+[0mGET / [32m200 [0m4.081 ms - 58[0m
+[0mGET / [32m200 [0m2.690 ms - 58[0m
+[0mGET / [32m200 [0m1.570 ms - 58[0m
+[0mGET / [32m200 [0m1.916 ms - 58[0m
+[0mGET / [32m200 [0m2.199 ms - 58[0m
+Terminate batch job (Y/N)? 

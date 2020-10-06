@@ -1,0 +1,37 @@
+= Node.js Greeter Application Setup
+
+== Setup
+. Create express app
+.. npm install -g express-generator
+.. npx express-generator -v pug
+.. npm install
+.. npm start
+.. verify the app is serving at http://localhost:3000
+. Add Health Checks
+.. npm install @cloudnative/health-connect --save
+.. Add a HealthChecker to app.js
+.. Register a Liveness check at "/live"
+.. Register a Health check at "/health"
+.. Register a Readiness check at "/ready"
+.. verify the app responds to health checks
+... http://localhost:3000/live
+... http://localhost:3000/ready
+... http://localhost:3000/health
+. Add Logging
+.. Create logger.js
+.. Export a Bunyan logger
+. Add http methods to index.js
+.. get: respond to users
+.. post: respond to kafka events
+. Build the docker image
+.. docker build -t greeter/nodejs:1.0 .
+.. docker images
+. Run the docker image
+.. docker run -p 49160:8080 -d greeter/nodejs:1.0
+. Test the docker image
+.. docker ps
+.. docker logs <contaier id>
+.. http://localhost:8080
+. Deploy k8s service
+.. kubectl config set-context --current --namespace=chapter-2
+.. kubectl -n chapter-2 apply -f greeter-nodejs-service.yaml

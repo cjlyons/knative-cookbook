@@ -1,0 +1,24 @@
+= Chapter2: Understanding Knative Serving
+== Environemnt Setp
+. kubens set chapter-2
+. - OR -
+. kubectl config set-context --current --namespace=chapter-2
+
+== Deploy a microservice as a serverless service on k8s using knative
+. Leverage existing microservice image from RedHat at quay.io/rhdevelopers/knative-tutorial-greeter:quarkus
+. Create a service yaml "greeter-service.yaml" for the above image
+. deploy the service "kubectl -n chapter-2 apply -f greeter-service.yaml"
+.. setup.bat runs the above steps
+. verify deployment using "watch kubectl get pods"
+. discover the service route using "kubectl -n chapter-2 get ksvc greeter"
+. call the greeter service
+.. IP Address: minikube ip
+.. 
+
+== Update a knative service configuration
+
+== Distribute traffic between knative service revisions
+
+== Blue-Green Deployment with Knative
+
+== Canary Release with Knative

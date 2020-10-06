@@ -32,7 +32,8 @@ export ISTIO_VERSION="${istio_version}"
 curl -L https://github.com/istio/istio/releases/download/${ISTIO_VERSION}/${filename} --output ${filename}
 
 header_text "Extracting Istio"
-tar -xzf "${filename}"
+# tar -xzf "${filename}"
+unzip -o "${filename}"
 rm "${filename}"
 
 pushd istio-${ISTIO_VERSION} > /dev/null

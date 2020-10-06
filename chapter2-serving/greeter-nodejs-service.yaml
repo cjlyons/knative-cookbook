@@ -1,0 +1,20 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: greeter-nodejs
+spec:
+  template:
+    metadata:
+      name: greeter-nodejs-v1-000
+      annotations:
+        # the minimum number of pods to scale down to
+        autoscaling.knative.dev/minScale: "1"
+    spec:
+      containers:
+      - image: greeter/nodejs:1.0
+        livenessProbe:
+          httpGet:
+            path: /live
+        readinessProbe:
+          httpGet:
+            path: /ready
