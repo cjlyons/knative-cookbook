@@ -1,2 +1,4 @@
 **/tmp/istio*.*
 **/tmp/*.yaml
+**/node_modules
+**/npm-debug.log
