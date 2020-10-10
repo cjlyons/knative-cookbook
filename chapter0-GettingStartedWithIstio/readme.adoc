@@ -1,0 +1,20 @@
+= Play around with Istio
+
+== Setup Istio
+. bash install-istio-demo.sh
+.. This step was necessary as the "getting started" install is only good for linux and mac systems
+. Verify Istio install
+.. kubectl get services
+... ClusterIP services should exist for details, kubernetes, productpage, ratings, & reviews  
+.. watch kubectl get pods
+... wait until all pods are "running". 6 pods: details, productpage, ratings, & reviews (v1, v2, & v3)
+. Verify everything is working correctly
+.. bash
+.. kubectl exec "$(kubectl get pod -l app=ratings -o jsonpath='{.items[0].metadata.name}')" -c ratings -- curl -s productpage:9080/productpage | grep -o "<title>.*</title>"
+... above should return "<title>Simple Bookstore App</title>"
+
+== Complete the getting started tutorial
+. https://istio.io/latest/docs/setup/getting-started/
+. run: env-setup.bat
+. run: minikube tunnel
+

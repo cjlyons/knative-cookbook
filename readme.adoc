@@ -26,8 +26,8 @@
 |tail multiple pods and containers within each pod
 
 |yq
-|2.4.1
-|Command line YAML processor
+|3.4.0
+|Command line YAML processor. choco install yq
 
 |httpie
 |2.2.0
@@ -86,29 +86,22 @@ The "eventing" component connects Knative Serving Services to event streams othe
 == knative setup
 
 === setup steps
-setup.bat contains the steps I used to set up knative in order to run through the RedHat tutorials.
+. Setup from scratch
+.. setup.bat contains the steps I used to set up knative in order to run through the RedHat tutorials.
 I scripted this as I kept getting my minikube cluster in a bad state while hacking around for various projects.
 This script now resets everything from scratch and gets me back to a point where I can run through the tutorials again.
+. Minimal steps needed every time we restart
+.. setup minikube hosts file
+... cd ..\apps\minikube-registry-helper
+... kubectl apply -n kube-system -f registry-aliases-config.yaml
+... kubectl apply -n kube-system -f node-etc-hosts-update.yaml
+... bash patch-coredns.sh
+... @FOR /f "tokens=*" %i IN ('minikube -p knativecookbook docker-env') DO @%i
 
 === Knative Installation
-. Verify DNS hacks
-.. minikube ssh -- sudo cat /etc/hosts
-.. kubectl get svc registry -n kube-system (hosts ip addresses should match the cluster ip)
-.. kubectl get cm -n kube-system coredns -o yaml
-. Verify Istio installation
-.. kubectl api-resources --api-group=networking.istio.io
-.. kubectl api-resources --api-group=config.istio.io
-.. kubectl api-resources --api-group=authentication.istio.io
-.. kubectl api-resources --api-group=rbac.istio.io
 . Install Serving and Eventing CRDs
 .. kubectl apply --selector knative.dev/crd-install=true --filename "https://github.com/knative/serving/releases/download/v0.18.0/serving.yaml"
 .. kubectl apply --selector knative.dev/crd-install=true --filename "https://github.com/knative/eventing/releases/download/v0.18.0/eventing.yaml"
-. Verify Serving and Eventing CRDs
-.. kubectl api-resources --api-group=serving.knative.dev
-.. kubectl api-resources --api-group=messaging.knative.dev
-.. kubectl api-resources --api-group=eventing.knative.dev
-.. kubectl api-resources --api-group=sources.eventing.knative.dev
-.. kubectl api-resources --api-group=sources.knative.dev
 . Install Serving Components
 .. kubectl apply --selector networking.knative.dev/certificate-provider!=cert-manager --filename "https://github.com/knative/serving/releases/download/v0.18.0/serving.yaml"
 .. watch kubectl get pods -n knative-serving
@@ -116,20 +109,41 @@ This script now resets everything from scratch and gets me back to a point where
 .. kubectl apply --selector networking.knative.dev/certificate-provider!=cert-manager --filename "https://github.com/knative/eventing/releases/download/v0.18.0/eventing.yaml"
 .. watch kubectl get pods -n knative-eventing
 
-=== Set up the docker environment to use minikube
-. Configure
-.. UNIX
-... eval $(minikube docker-env)
-.. Windows
-... @FOR /f "tokens=*" %i IN ('minikube -p knativecookbook docker-env') DO @%i
+=== Verify Setup
+. Verify minikube container registry is installed
+.. kubectl get pods -n kube-system
+... registry and registry-proxy pods should be running
+. Verify DNS hacks
+.. minikube ssh -- sudo cat /etc/hosts
+... dev.local and example.com entries should exist
+.. kubectl get svc registry -n kube-system
+... hosts ip addresses should match the cluster ip
+.. kubectl get cm -n kube-system coredns -o yaml
+... dev.local and example.com should rewrite to the minikube registry
+. Verify Istio installation
+.. Verify Istio pods are running
+... kubectl get pods -n istio-system
+.... 
+... kubectl get svc istio-ingressgateway -n istio-system
+.... if EXTERNAL-IP is <none> or <pending> then use the service's node port to access the gateway 
+..... host="minikube ip"
+..... port="kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}'")
+.... for more detail, see https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/)
+.. kubectl api-resources --api-group=networking.istio.io
+.. kubectl api-resources --api-group=config.istio.io
+.. kubectl api-resources --api-group=authentication.istio.io
+.. kubectl api-resources --api-group=rbac.istio.io
+. Verify Knative installation
+.. Verify Serving and Eventing CRDs
+... kubectl api-resources --api-group=serving.knative.dev
+... kubectl api-resources --api-group=messaging.knative.dev
+... kubectl api-resources --api-group=eventing.knative.dev
+... kubectl api-resources --api-group=sources.eventing.knative.dev
+... kubectl api-resources --api-group=sources.knative.dev
+.. Verify Serving and Eventing Components
+... watch kubectl get pods -n knative-serving
+... watch kubectl get pods -n knative-eventing
+
 . Verify docker configuration
 .. docker images --format {{.Repository}}
-
-=== Set up namespaces (switch using "kubens set chapter-2" )
-. kubectl create namespace chapter-2
-. kubectl create namespace chapter-3
-. kubectl create namespace chapter-4
-. kubectl create namespace chapter-5
-. kubectl create namespace chapter-6
-. kubectl create namespace chapter-7
-
+... this should list all images managed by k8s, not just the k8s image that docker is aware of.
